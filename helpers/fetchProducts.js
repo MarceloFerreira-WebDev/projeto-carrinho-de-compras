@@ -4,7 +4,7 @@ const fetchProducts = async (productName) => {
   if (url.endsWith('undefined')) return new Error('You must provide an url');
   const result = await fetch(url);
   const data = await result.json();
-  return data;
+  return data.results;
 };
 
 if (typeof module !== 'undefined') {
