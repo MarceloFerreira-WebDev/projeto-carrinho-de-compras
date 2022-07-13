@@ -31,6 +31,8 @@ const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').inn
 
 const cartItemClickListener = (event) => {
   // coloque seu código aqui
+  const element = event.target;
+  element.parentElement.removeChild(element);
 };
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
@@ -41,12 +43,13 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   return li;
 };
 
-const addToCart = async (target) => {
-  const itemId = getSkuFromProductItem(target.path[1]);
+const addToCart = async (event) => {
+  const element = event.target;
+  const itemId = getSkuFromProductItem(element.parentElement);
   const price = await fetchItem(itemId);
   const itemObject = {
     sku: itemId,
-    name: target.path[1].querySelector('.item__title').innerText,
+    name: element.parentElement.querySelector('.item__title').innerText,
     salePrice: price.price,
   };
   cartList.appendChild(createCartItemElement(itemObject));
