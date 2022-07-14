@@ -53,6 +53,7 @@ const addToCart = async (event) => {
     salePrice: price.price,
   };
   cartList.appendChild(createCartItemElement(itemObject));
+  saveCartItems(Object.entries(itemObject));
 };
 
 const btnAddToCart = () => {
@@ -77,4 +78,5 @@ const createListOfProducts = async () => {
 
 window.onload = () => {
   createListOfProducts();
+  getSavedCartItems();
 };
