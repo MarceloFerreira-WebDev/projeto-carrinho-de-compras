@@ -5,6 +5,7 @@ const saveCartItems = (element) => {
     atual = `${atual}&&${item.innerText}`;
   });
   localStorage.setItem('cartItems', atual);
+  console.log(atual);
 };
 
 if (typeof module !== 'undefined') {

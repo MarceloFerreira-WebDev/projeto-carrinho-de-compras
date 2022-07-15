@@ -1,6 +1,6 @@
 const itemsList = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
-const atualPrice = document.querySelector('.only_valor');
+const atualPrice = document.querySelector('.total-price');
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -30,11 +30,26 @@ const createProductItemElement = ({ sku, name, image }) => {
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
+const getTotalPrice = (valor) => {
+  let atual = 0;
+  valor.forEach((element) => {
+    const newValor = parseFloat(element.innerText.split('|')[2].replaceAll(' PRICE: $', ''));
+    atual += newValor;
+  });
+  atual = atual.toString().split('.');
+  if (atual.length > 1 && atual[1].length > 2) {
+    atual[1] = `${atual[1][0]}${atual[1][1]}`;
+  }
+  atual = atual.join(separator = '.');
+  atualPrice.innerText = atual;
+};
+
 const cartItemClickListener = (event) => {
   // coloque seu código aqui
   const element = event.target;
   element.parentElement.removeChild(element);
-  saveCartItems(cartList.childNodes); 
+  saveCartItems(cartList.childNodes);
+  getTotalPrice(cartList.childNodes);
 };
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
@@ -43,16 +58,6 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-};
-
-const getTotalPrice = (valor) => {
-  let totalValor = parseFloat(atualPrice.innerText) + valor;
-  totalValor = totalValor.toString().split('.');
-  if (totalValor.length > 1 && totalValor[1].length > 2) {
-    totalValor[1] = `${totalValor[1][0]}${totalValor[1][1]}`;
-  }
-  totalValor = totalValor.join(separator = '.');
-  atualPrice.innerText = totalValor;
 };
 
 const addToCart = async (event) => {
@@ -66,7 +71,7 @@ const addToCart = async (event) => {
   };
   cartList.appendChild(createCartItemElement(itemObject));
   saveCartItems(cartList.childNodes);
-  getTotalPrice(itemObject.salePrice);
+  getTotalPrice(cartList.childNodes);
 };
 
 const btnAddToCart = () => {
@@ -102,4 +107,5 @@ const getSavedCart = (items) => {
 window.onload = () => {
   createListOfProducts();
   getSavedCart(getSavedCartItems());
+  getTotalPrice(cartList.childNodes);
 };
