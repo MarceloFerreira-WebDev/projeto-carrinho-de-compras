@@ -105,8 +105,8 @@ const getSavedCart = (items) => {
   }
 };
 
-window.onload = () => {
+window.onload = async () => {
   createListOfProducts();
   getSavedCart(getSavedCartItems());
-  getTotalPrice(cartList.childNodes);
+  await getTotalPrice(cartList.childNodes);
 };
