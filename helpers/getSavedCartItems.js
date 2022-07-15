@@ -1,10 +1,10 @@
 const getSavedCartItems = () => {
   // seu código aqui
-  if (localStorage.length > 0) {
-    console.log(localStorage.length);
+  if (localStorage.getItem('cartItems') !== null) {
     const local = localStorage.getItem('cartItems').split('&&');  
     return local;
-  }
+}
+return [];
 };
 if (typeof module !== 'undefined') {
   module.exports = getSavedCartItems;

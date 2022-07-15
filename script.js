@@ -37,7 +37,8 @@ const getTotalPrice = (valor) => {
     atual += newValor;
   });
   atual = atual.toString().split('.');
-  if (atual.length > 1 && atual[1].length > 2) {
+  console.log(atual);
+  if (atual.length > 1 && atual[1] > 99) {
     atual[1] = `${atual[1][0]}${atual[1][1]}`;
   }
   atual = atual.join(separator = '.');
@@ -94,7 +95,7 @@ const createListOfProducts = async () => {
   btnAddToCart();
 };
 
-const getSavedCart = (items) => {
+const getSavedCart = (items) => {  
   for (let i = 1; i < items.length; i += 1) {
     const li = document.createElement('li');
     li.className = 'cart__item';
