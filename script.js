@@ -1,5 +1,6 @@
 const itemsList = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
+const atualPrice = document.querySelector('.only_valor');
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -33,6 +34,7 @@ const cartItemClickListener = (event) => {
   // coloque seu código aqui
   const element = event.target;
   element.parentElement.removeChild(element);
+  saveCartItems(cartList.childNodes); 
 };
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
@@ -41,6 +43,16 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+};
+
+const getTotalPrice = (valor) => {
+  let totalValor = parseFloat(atualPrice.innerText) + valor;
+  totalValor = totalValor.toString().split('.');
+  if (totalValor.length > 1 && totalValor[1].length > 2) {
+    totalValor[1] = `${totalValor[1][0]}${totalValor[1][1]}`;
+  }
+  totalValor = totalValor.join(separator = '.');
+  atualPrice.innerText = totalValor;
 };
 
 const addToCart = async (event) => {
@@ -53,7 +65,8 @@ const addToCart = async (event) => {
     salePrice: price.price,
   };
   cartList.appendChild(createCartItemElement(itemObject));
-  saveCartItems(Object.entries(itemObject));
+  saveCartItems(cartList.childNodes);
+  getTotalPrice(itemObject.salePrice);
 };
 
 const btnAddToCart = () => {
@@ -76,7 +89,17 @@ const createListOfProducts = async () => {
   btnAddToCart();
 };
 
+const getSavedCart = (items) => {
+  for (let i = 1; i < items.length; i += 1) {
+    const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.innerText = items[i];
+    li.addEventListener('click', cartItemClickListener);
+    cartList.appendChild(li);
+  }
+};
+
 window.onload = () => {
   createListOfProducts();
-  getSavedCartItems();
+  getSavedCart(getSavedCartItems());
 };

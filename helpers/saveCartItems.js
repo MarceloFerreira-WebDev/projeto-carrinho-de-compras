@@ -1,6 +1,10 @@
 const saveCartItems = (element) => {
   // seu código aqui
-  localStorage.setItem('cartItems', element);
+  let atual = '';
+  element.forEach((item) => {
+    atual = `${atual}&&${item.innerText}`;
+  });
+  localStorage.setItem('cartItems', atual);
 };
 
 if (typeof module !== 'undefined') {
