@@ -31,13 +31,13 @@ const createProductItemElement = ({ sku, name, image }) => {
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
 const getTotalPrice = (valor) => {
+  if (valor.length === 0) return 0; 
   let atual = 0;
-  valor.forEach((element) => {
+  valor.forEach((element) => {    
     const newValor = parseFloat(element.innerText.split('|')[2].replaceAll(' PRICE: $', ''));
     atual += newValor;
   });
-  atual = atual.toString().split('.');
-  console.log(atual);
+  atual = atual.toString().split('.');  
   if (atual.length > 1 && atual[1] > 99) {
     atual[1] = `${atual[1][0]}${atual[1][1]}`;
   }
