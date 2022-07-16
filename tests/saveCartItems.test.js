@@ -6,8 +6,8 @@ localStorageSimulator('setItem');
 describe('3 - Teste a função saveCartItems', () => {
   // implemente seus testes aqui
   test('se o storage muda quando adiciona ou remove um item', () => {
-    saveCartItems(['','']);
+    saveCartItems('<ol><li>Item</li></ol>');
     expect(localStorage.setItem).toHaveBeenCalledTimes(1);
-    expect(localStorage.setItem).toHaveBeenCalledWith('cartItems', '&&undefined&&undefined')
+    expect(localStorage.setItem).toHaveBeenCalledWith('cartItems', '<ol><li>Item</li></ol>')
   })
 });

@@ -34,7 +34,7 @@ const getTotalPrice = (valor) => {
   if (valor.length === 0) return 0; 
   let atual = 0;
   valor.forEach((element) => {
-    const stringValue = element.innerText.split('|')[2].replaceAll(' PRICE: $', '');
+    const stringValue = element.innerText.split('$')[1];    
     const numberValue = parseFloat(stringValue);
     atual += numberValue;
   });
@@ -46,11 +46,20 @@ const getTotalPrice = (valor) => {
   atualPrice.innerText = atual;
 };
 
+const childNodesToSaveString = () => {
+  const childs = cartList.childNodes;
+  let atual = '';
+  childs.forEach((item) => {
+    atual = `${atual}${item.innerText}&`;
+  });
+  return atual;
+};
+
 const cartItemClickListener = (event) => {
   // coloque seu código aqui
   const element = event.target;
   element.parentElement.removeChild(element);
-  saveCartItems(cartList.childNodes);
+  saveCartItems(childNodesToSaveString());
   getTotalPrice(cartList.childNodes);
 };
 
@@ -72,7 +81,7 @@ const addToCart = async (event) => {
     salePrice: price.price,
   };
   cartList.appendChild(createCartItemElement(itemObject));
-  saveCartItems(cartList.childNodes);
+  saveCartItems(childNodesToSaveString());
   getTotalPrice(cartList.childNodes);
 };
 
@@ -96,18 +105,22 @@ const createListOfProducts = async () => {
   btnAddToCart();
 };
 
-const getSavedCart = (items) => {  
-  for (let i = 1; i < items.length; i += 1) {
-    const li = document.createElement('li');
-    li.className = 'cart__item';
-    li.innerText = items[i];
-    li.addEventListener('click', cartItemClickListener);
-    cartList.appendChild(li);
+const createSavedCart = () => {
+  const savedItems = getSavedCartItems();
+  if (savedItems !== null) {
+    const separedItems = savedItems.split('&');
+    for (let i = 0; i < separedItems.length - 1; i += 1) {
+      const li = document.createElement('li');
+      li.className = 'cart__item';
+      li.innerText = separedItems[i];
+      li.addEventListener('click', cartItemClickListener);
+      cartList.appendChild(li);   
+    }
   }
 };
 
 window.onload = async () => {
   createListOfProducts();
-  getSavedCart(getSavedCartItems());
+  createSavedCart();
   await getTotalPrice(cartList.childNodes);
 };
