@@ -33,9 +33,10 @@ const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').inn
 const getTotalPrice = (valor) => {
   if (valor.length === 0) return 0; 
   let atual = 0;
-  valor.forEach((element) => {    
-    const newValor = parseFloat(element.innerText.split('|')[2].replaceAll(' PRICE: $', ''));
-    atual += newValor;
+  valor.forEach((element) => {
+    const stringValue = element.innerText.split('|')[2].replaceAll(' PRICE: $', '');
+    const numberValue = parseFloat(stringValue);
+    atual += numberValue;
   });
   atual = atual.toString().split('.');  
   if (atual.length > 1 && atual[1] > 99) {
