@@ -96,7 +96,20 @@ const btnAddToCart = () => {
   });
 };
 
+const addLoadingText = () => {
+  const loading = document.createElement('p');
+  loading.className = 'loading';
+  loading.innerText = 'carregando...';
+  return loading;
+};
+
+const removeLoadingText = () => {
+  const loading = document.querySelector('.loading');
+  itemsList.removeChild(loading);
+};
+
 const createListOfProducts = async () => {
+  itemsList.appendChild(addLoadingText());
   const list = await fetchProducts('computador');
   const readyList = list.map((element) => ({
     sku: element.id,
@@ -107,6 +120,7 @@ const createListOfProducts = async () => {
     itemsList.appendChild(createProductItemElement(element));
   });
   btnAddToCart();
+  removeLoadingText();
 };
 
 const createSavedCart = () => {
