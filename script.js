@@ -1,6 +1,7 @@
 const itemsList = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
 const atualPrice = document.querySelector('.total-price');
+const emptyBtn = document.querySelector('.empty-cart');
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -31,7 +32,10 @@ const createProductItemElement = ({ sku, name, image }) => {
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
 const getTotalPrice = (valor) => {
-  if (valor.length === 0) return 0; 
+  if (valor.length === 0) {
+    atualPrice.innerText = 0;
+    return 0;
+  }
   let atual = 0;
   valor.forEach((element) => {
     const stringValue = element.innerText.split('$')[1];    
@@ -118,6 +122,16 @@ const createSavedCart = () => {
     }
   }
 };
+
+const clearCart = () => {  
+  while (cartList.firstChild) {
+    cartList.removeChild(cartList.lastChild);
+  }
+  saveCartItems(childNodesToSaveString());
+  getTotalPrice(cartList.childNodes);
+};
+
+emptyBtn.addEventListener('click', clearCart);
 
 window.onload = async () => {
   createListOfProducts();
