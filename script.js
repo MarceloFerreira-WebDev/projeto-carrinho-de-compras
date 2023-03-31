@@ -67,7 +67,7 @@ const createCartItemElement = ({ name, salePrice, image }) => {
       'p', 'item__price', `R$ ${salePrice.toFixed(2).toString().replace('.', ',')}`,
     ),
   );
-  removeItemBtn = li.appendChild(createCustomElement('p', 'remove-item-btn', 'x'));
+  removeItemBtn = li.appendChild(createCustomElement('button', 'remove-item-btn', 'x'));
   removeItemBtn.addEventListener('click', cartItemClickListener);
   return li;
 };
