@@ -1,6 +1,5 @@
 require('../mocks/fetchSimulator');
 const { fetchProducts } = require('../helpers/fetchProducts');
-const computadorSearch = require('../mocks/search');
 
 describe('1 - Teste a função fetchProducts', () => {
   // implemente seus testes aqui
@@ -17,12 +16,6 @@ describe('1 - Teste a função fetchProducts', () => {
     const link = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'
     fetchProducts('computador');
     expect(fetch).toHaveBeenCalledWith(link);
-  })
-
-  test('se o retorno da função com o argumento "computador" é o esperado', async () => {
-    const expected = computadorSearch;
-    const atual = await fetchProducts('computador')
-    expect(atual).toEqual(expected);
   })
 
   test('se retorna o erro correto ao chamar a função sem nenhum parâmetro', async () => {

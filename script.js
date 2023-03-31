@@ -17,76 +17,77 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
-const createProductItemElement = ({ sku, name, image }) => {
+const createProductItemElement = ({ sku, name, image, price }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('p', 'item__title', name));
+  section.appendChild(
+    createCustomElement(
+      'span', 'item__price', `R$ ${price.toFixed(2).toString().replace('.', ',')}`,
+    ),
+  );
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho'));
 
   return section;
 };
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
-const getTotalPrice = (valor) => {
-  if (valor.length === 0) {
-    atualPrice.innerText = 0;
-    return 0;
+const getTotalPrice = () => {  
+  const cart = getSavedCartItems();
+  if (cart) {
+    const subTotal = JSON.parse(cart).reduce((acc, curr) => acc + curr.salePrice, 0);
+    atualPrice.innerText = `Subtotal R$ ${subTotal.toFixed(2).toString().replace('.', ',')}`;
+  } else {
+    atualPrice.innerText = 'Subtotal R$ 0,00';
   }
-  let atual = 0;
-  valor.forEach((element) => {
-    const stringValue = element.innerText.split('$')[1];    
-    const numberValue = parseFloat(stringValue);
-    atual += numberValue;
-  });
-  atual = atual.toString().split('.');  
-  if (atual.length > 1 && atual[1] > 99) {
-    atual[1] = `${atual[1][0]}${atual[1][1]}`;
-  }
-  atual = atual.join(separator = '.');
-  atualPrice.innerText = atual;
-};
-
-const childNodesToSaveString = () => {
-  const childs = cartList.childNodes;
-  let atual = '';
-  childs.forEach((item) => {
-    atual = `${atual}${item.innerText}&`;
-  });
-  return atual;
 };
 
 const cartItemClickListener = (event) => {
   // coloque seu código aqui
   const element = event.target;
-  element.parentElement.removeChild(element);
-  saveCartItems(childNodesToSaveString());
-  getTotalPrice(cartList.childNodes);
+  element.parentElement.parentElement.removeChild(element.parentElement);
+  const cart = JSON.parse(getSavedCartItems());
+  const newCart = cart
+    .filter((item) => item.name !== element.parentElement.childNodes[1].innerText);
+  saveCartItems(newCart);
+  getTotalPrice();
 };
 
-const createCartItemElement = ({ sku, name, salePrice }) => {
+const createCartItemElement = ({ name, salePrice, image }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.appendChild(createProductImageElement(image));
+  li.appendChild(createCustomElement('p', 'item__title', name));
+  li.appendChild(
+    createCustomElement(
+      'p', 'item__price', `R$ ${salePrice.toFixed(2).toString().replace('.', ',')}`,
+    ),
+  );
+  removeItemBtn = li.appendChild(createCustomElement('p', 'remove-item-btn', 'x'));
+  removeItemBtn.addEventListener('click', cartItemClickListener);
   return li;
 };
 
 const addToCart = async (event) => {
   const element = event.target;
   const itemId = getSkuFromProductItem(element.parentElement);
-  const price = await fetchItem(itemId);
+  const item = await fetchItem(itemId);
   const itemObject = {
     sku: itemId,
     name: element.parentElement.querySelector('.item__title').innerText,
-    salePrice: price.price,
+    salePrice: item.price,
+    image: item.thumbnail,
   };
   cartList.appendChild(createCartItemElement(itemObject));
-  saveCartItems(childNodesToSaveString());
-  getTotalPrice(cartList.childNodes);
+  const cart = JSON.parse(getSavedCartItems());
+  if (cart) {
+    saveCartItems([...cart, itemObject]);
+  } else { saveCartItems([itemObject]); }
+  getTotalPrice();
 };
 
 const btnAddToCart = () => {
@@ -115,6 +116,7 @@ const createListOfProducts = async () => {
     sku: element.id,
     name: element.title,
     image: element.thumbnail,
+    price: element.price,
   }));
   readyList.forEach((element) => {
     itemsList.appendChild(createProductItemElement(element));
@@ -126,13 +128,9 @@ const createListOfProducts = async () => {
 const createSavedCart = () => {
   const savedItems = getSavedCartItems();
   if (savedItems !== null) {
-    const separedItems = savedItems.split('&');
-    for (let i = 0; i < separedItems.length - 1; i += 1) {
-      const li = document.createElement('li');
-      li.className = 'cart__item';
-      li.innerText = separedItems[i];
-      li.addEventListener('click', cartItemClickListener);
-      cartList.appendChild(li);   
+    const separedItems = JSON.parse(savedItems);
+    for (let i = 0; i < separedItems.length; i += 1) {
+      cartList.appendChild(createCartItemElement(separedItems[i]));
     }
   }
 };
@@ -141,14 +139,14 @@ const clearCart = () => {
   while (cartList.firstChild) {
     cartList.removeChild(cartList.lastChild);
   }
-  saveCartItems(childNodesToSaveString());
-  getTotalPrice(cartList.childNodes);
+  saveCartItems([]);
+  getTotalPrice();
 };
 
 emptyBtn.addEventListener('click', clearCart);
 
-window.onload = async () => {
+window.onload = () => {
   createListOfProducts();
   createSavedCart();
-  await getTotalPrice(cartList.childNodes);
+  getTotalPrice();
 };
