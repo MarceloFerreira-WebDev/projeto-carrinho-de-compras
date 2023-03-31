@@ -121,6 +121,7 @@ body {
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
+  align-items: center;
   background-color: rgba(243, 249, 251, 1);
   width: 28%;
 }
@@ -159,6 +160,7 @@ body {
   width: 170px;
   height: 35px;
   margin: 0 auto;
-  border: 2px solid rgb(5, 52, 219);
-  background-color: rgb(249, 249, 246);
+  color: white;
+  font-weight: 700;
+  background-color: rgba(65, 25, 127, 1);
 }
