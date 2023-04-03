@@ -131,25 +131,35 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
 }
 
 .cart__item {
   display: flex;
   flex-flow: column wrap;
-  max-height: 15vh;
+  max-height: 105px;
+  max-width: 86%;
   margin-top: 2vh;
 }
 
 .cart__item .item__image {
-  height: 15vh;
   border-radius: 100%;
+  width: 30%;
   margin: 0 1vh;
 }
 
 .cart__item .item__title {
-  max-width: 55%;
-  height: 9vh;
+  max-width: 45%;
+  height: 50%;
+  font-size: 12px;
   margin-bottom: 2vh;
+  overflow: auto;
+}
+
+.cart__item .item__price {
+  width: 45%;
+  height: 20%;
+  font-size: 20px;
 }
 
 .total-price {
